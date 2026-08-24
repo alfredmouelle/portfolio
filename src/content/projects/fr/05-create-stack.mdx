@@ -1,16 +1,16 @@
 ---
 title: "create-stack"
-description: "CLI de scaffolding open source agnostique du framework : elle clone une application complète pré-configurée et retire précisément ce que vous ne choisissez pas (framework, base de données, auth, tRPC, capabilities). Le projet généré démarre et passe le typecheck dès le premier commit."
+description: "Une CLI qui part d'une application SaaS full-stack fonctionnelle, vous laisse choisir les éléments nécessaires et retire le reste. Elle branche les routes, les providers, les variables d'environnement et les vérifications avant le premier commit."
 year: 2026
 role: "Créateur & Développeur Full-Stack"
 stacks:
   - Node.js
+  - TypeScript
   - TanStack Start
   - Next.js
   - tRPC
   - Drizzle
   - better-auth
-  - Tailwind CSS
   - Biome
 url: "https://create-stack.alfredmouelle.com"
 repo: "https://github.com/alfredmouelle/create-stack"
@@ -24,55 +24,51 @@ meta:
     - create-stack
     - cli
     - scaffolding
-    - bootstrapper
-    - framework agnostic
-    - starter
+    - full stack
     - tanstack start
     - nextjs
+    - typescript
     - trpc
     - drizzle
     - better-auth
-    - ports and adapters
+    - providers
+    - web builder
     - monorepo
-    - turborepo
-    - nx
     - open source
 ---
 
-# create-stack : composez votre stack, lancez une vraie application
+# create-stack : une vraie application, configurée selon vos choix
 
 ## Le produit
 
-**create-stack** est un outil en ligne de commande disponible sur npm (`@alfredmouelle/create-stack`) pour générer des starters full-stack modulaires. Plutôt que d'assembler des templates textuels avec des placeholders vides, create-stack adopte une approche fork-and-strip : la CLI clone une application de base complète et retire proprement chaque librairie ou configuration non sélectionnée. Le projet résultant compile, passe le typecheck et s'exécute immédiatement.
+**create-stack** est une CLI npm et un constructeur web pour créer des applications full-stack. Le projet part d'une application fonctionnelle plutôt que d'un template vide. Vous choisissez sa forme, puis create-stack écrit les fichiers, branche les providers, vérifie l'environnement et lance les contrôles avant votre premier commit.
 
-Next.js (App Router) et TanStack Start sont pris en charge nativement, avec d'autres frameworks prévus.
+Next.js (App Router) et TanStack Start sont disponibles aujourd'hui. Le projet généré est pensé pour TypeScript, sous licence MIT et prêt à être modifié dès que la commande se termine.
 
-## Fonctionnalités clés
+## Le fonctionnement
 
-- **Choix de framework** : génération d'applications Next.js ou TanStack Start avec SSR, routage par fichiers, Tailwind v4 et Shadcn UI.
-- **Assistant interactif dans le terminal** : invite de commande guidée par `@clack/prompts`, avec bascule automatique en mode non-interactif lorsque des flags CLI sont fournis.
-- **Pilotes de base de données** : configuration au choix de Drizzle (PostgreSQL avec adapter, schémas et script de seed), Prisma 7, Convex ou aucun pour un site vitrine.
-- **Authentification et API** : better-auth (email/mot de passe, validation, OAuth) ou Clerk, associé à des procédures tRPC v11 typées de bout en bout.
-- **Capabilities modulaires** : stockage de fichiers, cache, jobs en arrière-plan, logs structurés, analytics et suivi des erreurs isolés derrière des ports (architecture hexagonale) pour changer de fournisseur via une simple variable d'environnement.
-- **Structure monorepo optionnelle** : le flag `--monorepo [turbo|nx]` place l'application dans `apps/web` au sein d'un workspace Turborepo ou Nx prêt à l'emploi.
-- **Configuration propre dès l'initialisation** : règles Biome strictes, validation des variables d'environnement avec `env.ts`, Dockerfile, hooks Git et workflow CI GitHub Actions générés.
+- **Choisir la forme du projet** : framework, base de données, authentification, tRPC, mailer, monorepo et capabilities optionnelles.
+- **Garder les choix explicites** : les omissions compatibles sont complétées avec une raison visible dans la CLI ou le constructeur web.
+- **Commencer avec une vraie application** : routage, styles, variables d'environnement et premier écran sont déjà reliés.
+- **Changer de provider sans réécrire l'application** : la base de données, l'authentification, l'email et les autres capabilities utilisent de petites interfaces, donc le remplacement reste local.
+- **Transmettre un projet lisible** : create-stack retire ce que vous n'avez pas choisi, lance TypeScript et Biome, puis laisse des fichiers ordinaires que vous pouvez reprendre.
 
-![Le constructeur interactif : chaque sélection met à jour la commande CLI correspondante](../_assets/create-stack-builder.webp)
+![Le constructeur web : chaque choix met à jour la commande et explique la stack résolue](../_assets/create-stack-builder.webp)
 
-## Ingénierie et fiabilité
+## La CLI et le constructeur web
 
-- **Suite de tests automatisée** : tests Vitest incluant des smoke tests qui génèrent un projet complet pour valider l'installation des dépendances, le typecheck et le linting.
-- **Matrice de tests CI** : vérification systématique des configurations Next.js et TanStack Start à chaque pull request.
-- **Publication sécurisée** : publication npm sans token via GitHub Actions OIDC Trusted Publishing avec signature de provenance.
-- **Empreinte minimale** : script ESM pur sans étape de compilation intermédiaire et avec une seule dépendance directe (`@clack/prompts`).
+La CLI et le constructeur utilisent la même stack recommandée. Dans le terminal, les prompts interactifs vous accompagnent dans vos choix. Les flags produisent une commande non interactive qui fonctionne aussi dans les scripts et les environnements automatisés.
 
-## Stack technique
+Le constructeur conserve les choix dans l'URL pour partager une stack. Ses notes de résolution rendent les dépendances visibles au lieu de modifier un choix en silence. Une fois prêt, il donne la commande exacte pour pnpm, npm, yarn ou bun.
 
-- **Cœur CLI** : Node.js (>= 22), ESM pur, analyseur d'arguments dédié, `@clack/prompts`.
-- **Distribution** : monorepo pnpm et Turborepo, packaging au `prepack`, publication via GitHub Actions OIDC.
-- **Stack applicative générée** : Next.js ou TanStack Start, React 19, tRPC v11, Drizzle / Prisma / Convex, better-auth / Clerk, Tailwind v4, validation d'environnement avec Valibot.
-- **Outils qualité** : Vitest, règles strictes Biome v2, CI GitHub Actions.
+## Ce que le projet génère
+
+- **Frameworks** : Next.js App Router ou TanStack Start.
+- **Données et authentification** : Drizzle, Prisma, Convex, Better Auth, Clerk, ou aucun provider si le projet n'en a pas besoin.
+- **API et email** : tRPC, puis Resend, Brevo, Amazon SES ou aucun mailer.
+- **Workspace et capabilities** : application seule, Turborepo ou Nx, avec stockage objet, cache, logs structurés, analytics, jobs en arrière-plan et suivi des erreurs en option.
+- **Outils** : Node.js, TypeScript, Tailwind CSS et Biome.
 
 ## Mon rôle
 
-J'ai conçu et développé create-stack sous licence open source MIT, en réalisant le moteur de composition fork-and-strip, les ports d'intégration modulaires, le wizard interactif en CLI, la suite de tests et le configurateur en ligne.
+J'ai conçu et développé create-stack sous licence MIT. J'ai réalisé le moteur de composition, les frontières entre providers, les prompts CLI, le constructeur web et les contrôles qui rendent le projet généré prêt pour son premier commit utile.
